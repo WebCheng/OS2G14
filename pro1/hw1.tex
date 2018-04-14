@@ -1,0 +1,162 @@
+\documentclass[english,10pt,letterpaper,onecolumn]{IEEEtran} 
+
+\usepackage{geometry}
+\geometry{margin=.75in}
+
+\usepackage[utf8]{inputenc} 
+\usepackage{babel}  
+  
+\usepackage[noadjust]{cite}
+
+\usepackage{titling}
+\title{CS544 Project 1 Getting Acquainted}
+\author{
+  Webster Cheng \hspace{1cm}
+  \and
+  Sheng Mao \hspace{1cm}
+  \and
+  Zhuoling Chen
+}
+\date{April 11th} 
+
+\begin{document}
+\pagenumbering{gobble} 
+\begin{titlepage} 
+\maketitle
+\begin{center}
+ Operating Systems II \\
+Spring 2018
+\vspace{50 mm}
+\end{center}
+\begin{abstract}
+
+In this assignment, we boot the virtual machine of Linux kernel, using a QEMU virtual machine monitor. This report lists the commands for booting the QEMU VM, the explanations of command lines, and our team work logs and version control logs.
+\end{abstract}
+\end{titlepage}
+ 
+ 
+\pagenumbering{arabic}
+\begin{center}
+{\bf I. Command List}
+\begin{enumerate}
+  	\item Open the terminal then type \\
+  	usename@os2.engr.oregonstate.edu
+  	\item cd /scratch/spring2018
+  	\item mkdir 14 \\
+  	=\textgreater group number is 14
+  	\item cd 14
+  	\item git clone git://git.yoctoproject.org/linux-yocto-3.19.\\
+  	=\textgreater Export the kernel from URL
+  	\item cd linux-yocto-3.19
+  	\item git checkout tags/v3.19.2\\
+  =\textgreater Change the version
+  \item git branch  \\
+  =\textgreater Checking out the version
+  \item cp /scratch/files/*/scratch/spring2018/14/ \\
+  =\textgreater copy all the files for preparing
+  \item cp config-3.19.2-yocto-standard ./linux-yocto-3.19/.config\\
+  =\textgreater make config files
+  \item make menuconfig\\
+   =\textgreater Change LOCALVERSION, it can help us to check VM followed .config
+  \item make -j4\\ 
+   =\textgreater setting environment by following .config file
+  \item source 14/environment-setup-i586-poky-linux\\
+  =\textgreater Before typing this command, user should change mode into shell, because source is in bash command\\need to change into the shell (source is the cmd in "Bash")Source file have something about the "qemu-system-i386" cmd bash
+  \item qemu-system-i386 -gdb tcp::5614 -S -nographic -kernel linux-yocto-3.19/arch/x86/boot/bzImage  -drive file=core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"\\
+  =\textgreater launch qemu\\
+On the Second Terminal \\
+  \item cd /scratch/spring2018/14
+  \item (gdb) target remote :5514\\
+   =\textgreater connect the interface, which used to launch 
+  \item (gdb) continue
+   =\textgreater the process will go back to the first terminal\\
+On the First Terminal \\
+  \item root
+  \item uname -a
+\end{enumerate}
+\end{center}
+\clearpage
+% Ref Link 
+% https://qemu.weilnetz.de/w64/2012/2012-12-04/qemu-doc.html#index-g_t_002denable_002dkvm-92
+%qemu-system-i386 -gdb tcp::???? -S -nographic -kernel bzImage-qemux86.bin -drive file=core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug".
+\begin{center}
+\begin{center}
+{\bf II. Flag in the listed qemu command-line}
+\end{center}
+qemu-system-i386 -gdb tcp::5614 -S -nographic -kernel linux-yocto-3.19/arch/x86/boot/bzImage  -drive file=core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"\\
+  =\textgreater When this terminal ran, the CPU would be halted, then it started to launch qemu in debug mode. In order to use VM, we executed gdb in another terminal, which connected gdb to a remote target at the port specified above.\\
+  
+\begin{enumerate}
+   \item -gdb\\
+   Wait for gdb connection on device dev.
+   \item tcp::\\ 
+   QEMU will wait for a client socket application to connect to the port before continuing, unless the no wait option was specified.
+   \item-S\\ 
+   Do not use CPU at beginning. 
+   \item-nographic\\
+   Totally disable graphical output so that QEMU is a simple command line application.
+   \item-kernel\\
+   Boot a kernel without installing the disk image.It will use bzImage as kernel image.
+   \item-drive file=core-image-lsb-sdk-qemux86.ext3,if=virtio\\
+   Define a new drive. The "if" defines on which type on interface the drive is connected. The virtio is short for a virtualization standard.
+   \item-enable-kvm\\
+   Enable KVM full virtualization support. This option is only available if KVM support is enabled when compiling. 
+   \item-net none\\
+   Prevents the kernel from configuring any network devices to this case. The "none" not configure any network devices.
+   \item-usb\\ 
+   For using USB driver.
+   \item -localtime\\
+   Set VM's time same as local time.
+   \item --no-reboot \\
+   Exiting with no reboot.
+    \item --append "root=/dev/vda rw console=ttyS0 debug"\\
+   Using a specific kernel command at startup.
+  \end{enumerate}
+
+\end{center}
+
+\begin{center}
+\begin{center}
+{\bf III.Version control log} 
+\end{center}
+\begin{tabular}[c]{lcccr}
+Date & Commit & Author & Description \\\hline
+04/09&076727aaf73ee5c4f874c45d50eb661db9318d2c&Webster&Initial commit\\
+04/09&32c3e10e447a368134e1a60221b6e5e33dc83165&Webster&Update README.md\\
+04/09&82b17ebd0b3d55a7b94ac29922af37246542d1ed&Webster&Add PDF and tarbz2 Makefile\\
+04/11&62a6d7963fff814b1119ee22492a46833430f688&Webster&Add- Submodule of tex file from Overleaf\\
+\end{tabular}  
+\end{center}
+
+\begin{center}
+\begin{center}
+{\bf IV. Work log}
+\end{center}
+\begin{tabular}[c]{lcccr}
+Date & Name & Detail \\\hline
+Apr.4 & All & Project Preparation \\
+Apr.5 & All & Group Meeting  \\
+Apr.6 & Webster & Boot VM Success\\
+Apr.8 & Webster   & Setting environment of overleaf and Git \\
+Apr.8 & Zhuoling  & Writing LaTex\\
+Apr.9 & Sheng  & Concurrency and OS scheduling research\\
+Apr.11 & All & Group Meeting \\
+Apr.12 & Zhuoling & LaTex done \\
+Apr.13 & All  & Concurrency Code Finish \\
+Apr.14 & All  & Review Project \\\\
+\end{tabular}  
+\end{center}
+\clearpage
+
+\begin{center}
+{\bf Reference}
+\begin{enumerate}
+\item S.Weil, "QEMU Binaries for Windows and QEMU Documentation" Dec 21, 2017 {\textit {QEMU Emulator User Documentation}} [Online]  Available: 
+https://qemu.weilnetz.de/w64/2012/2012-12-04/qemu-doc.html [Accessed on Apr 06, 2018]
+\end{enumerate}
+\end{center}
+
+\end{document}
+
+
+
