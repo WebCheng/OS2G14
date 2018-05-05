@@ -32,6 +32,13 @@ config IOSCHED_CFQ
 
 	  This is the default I/O scheduler.
 
+config IOSCHED_SSTF
+    tristate "SSTF"
+    default y
+    ---help---
+        The SSTF I/O scheduler
+
+
 config CFQ_GROUP_IOSCHED
 	bool "CFQ Group Scheduling support"
 	depends on IOSCHED_CFQ && BLK_CGROUP
@@ -55,6 +62,9 @@ choice
 	config DEFAULT_NOOP
 		bool "No-op"
 
+    config DEFAULT_SSTF
+        bool "SSTF" if IOSCHED_SSTF=y
+
 endchoice
 
 config DEFAULT_IOSCHED
@@ -62,6 +72,7 @@ config DEFAULT_IOSCHED
 	default "deadline" if DEFAULT_DEADLINE
 	default "cfq" if DEFAULT_CFQ
 	default "noop" if DEFAULT_NOOP
+    default "sstf" if DEFAULT_SSTF
 
 endmenu
 
