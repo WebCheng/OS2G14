@@ -57,7 +57,7 @@ In this assignment, we boot the virtual machine of Linux kernel, using a QEMU vi
   \item cp config-3.19.2-yocto-standard ./linux-yocto-3.19/.config\\
   =\textgreater make config files
   \item make menuconfig\\
-   =\textgreater Change LOCALVERSION, it can help us to check VM followed .config
+   =\textgreater Changing LOCALVERSION or other VM setting.
   \item make -j4\\ 
    =\textgreater setting environment by following .config file
   \item source 14/environment-setup-i586-poky-linux\\
@@ -83,7 +83,7 @@ On the First Terminal \\
 \begin{center}
 {\bf II. Flag in the listed qemu command-line}
 \end{center}
-qemu-system-i386 -gdb tcp::5614 -S -nographic -kernel linux-yocto-3.19/arch/x86/boot/bzImage  -drive file=core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"\\
+qemu-system-i386 -gdb tcp::5514 -S -nographic -kernel linux-yocto-3.19/arch/x86/boot/bzImage  -drive file=core-image-lsb-sdk-qemux86.ext4,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"\\
   =\textgreater When this terminal ran, the CPU would be halted, then it started to launch qemu in debug mode. In order to use VM, we executed gdb in another terminal, which connected gdb to a remote target at the port specified above.\\
   
 \begin{enumerate}
