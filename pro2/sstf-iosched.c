@@ -43,7 +43,7 @@ static int sstf_dispatch(struct request_queue *q, int force)
 			}
 			else
 			{
-				if (blk_rq_pos(rp_next) > blk_rq_pos(c))
+				if (blk_rq_pos(rp_next) > blk_rq_pos(c) && blk_rq_pos(rp_next) > currSector)
 					rp_next = c;
 			}
 		}
